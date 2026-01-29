@@ -1,117 +1,178 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Love Quest 💖</title>
+<title>Love Game Challenge 💖</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  background: #111;
+  color: white;
   text-align: center;
-  color: #fff;
+  font-family: Arial;
 }
-.container {
-  max-width: 600px;
-  margin: auto;
-  padding: 30px;
-}
-.card {
-  background: rgba(255,255,255,0.2);
-  padding: 25px;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  margin-top: 20px;
+canvas {
+  background: #222;
+  display: block;
+  margin: 20px auto;
+  border-radius: 12px;
 }
 button {
-  background: #ff4d6d;
-  border: none;
-  padding: 12px 20px;
+  padding: 12px 25px;
   border-radius: 30px;
+  border: none;
+  background: #ff3366;
   color: white;
   font-size: 16px;
   cursor: pointer;
-  margin: 10px;
-}
-button:hover {
-  background: #ff1e4d;
 }
 .hidden { display: none; }
-.heart {
-  font-size: 40px;
-  animation: pulse 1.2s infinite;
-}
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
 </style>
 </head>
 
 <body>
-<div class="container">
-  <h1>💖 Love Quest 💖</h1>
-  <p>For Me & My Favorite Person</p>
 
-  <div class="card" id="start">
-    <div class="heart">❤️</div>
-    <p>Ready to play our love game?</p>
-    <button onclick="nextCard('q1')">Start</button>
-  </div>
+<h1>💖 Win My Heart 💖</h1>
 
-  <div class="card hidden" id="q1">
-    <h2>💌 Question</h2>
-    <p>Who fell in love first?</p>
-    <button onclick="nextCard('challenge')">Me 😌</button>
-    <button onclick="nextCard('challenge')">You 😍</button>
-  </div>
-
-  <div class="card hidden" id="challenge">
-    <h2>🎯 Challenge</h2>
-    <p>Send me your cutest selfie 📸</p>
-    <button onclick="nextCard('memory')">Done 💖</button>
-  </div>
-
-  <div class="card hidden" id="memory">
-    <h2>🧠 Memory Round</h2>
-    <p>Where did we meet first?</p>
-    <button onclick="nextCard('secret')">Office 💼</button>
-    <button onclick="nextCard('secret')">Party 🎉</button>
-    <button onclick="nextCard('secret')">Destiny ✨</button>
-  </div>
-
-  <div class="card hidden" id="secret">
-    <h2>🔒 Secret Message</h2>
-    <button onclick="revealMessage()">Reveal 💕</button>
-    <p id="message" class="hidden">
-      I choose you. Every single day. 💖
-    </p>
-    <button id="finalBtn" class="hidden" onclick="nextCard('final')">Next</button>
-  </div>
-
-  <div class="card hidden" id="final">
-    <h2>💍 Final Surprise</h2>
-    <p>You are my favorite chapter ❤️</p>
-    <div class="heart">💖</div>
-    <p>Forever us?</p>
-  </div>
-</div>
+<button id="startBtn">Start Game</button>
+<canvas id="game" width="300" height="400" class="hidden"></canvas>
+<p id="msg"></p>
 
 <script>
-function nextCard(id) {
-  document.querySelectorAll('.card').forEach(card => {
-    card.classList.add('hidden');
-  });
-  document.getElementById(id).classList.remove('hidden');
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+let game = 1, score = 0;
+let player, obstacles, bullets;
+
+document.getElementById("startBtn").onclick = () => startGame();
+
+function startGame() {
+  score = 0;
+  canvas.classList.remove("hidden");
+  document.getElementById("startBtn").classList.add("hidden");
+  if (game === 1) carGame();
+  if (game === 2) runGame();
+  if (game === 3) gunGame();
 }
 
-function revealMessage() {
-  document.getElementById('message').classList.remove('hidden');
-  document.getElementById('finalBtn').classList.remove('hidden');
+function winGame() {
+  game++;
+  canvas.classList.add("hidden");
+  if (game <= 3) {
+    document.getElementById("startBtn").innerText = "Next Game ❤️";
+    document.getElementById("startBtn").classList.remove("hidden");
+  } else {
+    document.body.innerHTML = `
+      <h1>💍 YOU WON 💍</h1>
+      <p>You cleared all games… now you own my heart 💖</p>
+    `;
+  }
+}
+
+/* 🚗 CAR GAME */
+function carGame() {
+  player = { x: 130, y: 330, w: 40, h: 40 };
+  obstacles = [];
+  document.onkeydown = e => {
+    if (e.key === "ArrowLeft") player.x -= 20;
+    if (e.key === "ArrowRight") player.x += 20;
+  };
+
+  function loop() {
+    ctx.clearRect(0,0,300,400);
+    ctx.fillStyle="red";
+    ctx.fillRect(player.x,player.y,player.w,player.h);
+
+    if (Math.random()<0.03)
+      obstacles.push({x:Math.random()*260,y:0});
+
+    ctx.fillStyle="white";
+    obstacles.forEach(o=>{
+      o.y+=5;
+      ctx.fillRect(o.x,o.y,30,30);
+      if (o.y>400) score++;
+      if (o.x<player.x+40 && o.x+30>player.x && o.y<player.y+40 && o.y+30>player.y)
+        return;
+    });
+
+    if (score>10) return winGame();
+    requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+/* 🏃 RUNNER GAME */
+function runGame() {
+  player = { y: 300, vy: 0 };
+  obstacles = [];
+
+  document.onclick = ()=> player.vy = -10;
+
+  function loop() {
+    ctx.clearRect(0,0,300,400);
+    player.y += player.vy;
+    player.vy += 0.5;
+    if (player.y>300) player.y=300;
+
+    ctx.fillStyle="cyan";
+    ctx.fillRect(50,player.y,30,30);
+
+    if (Math.random()<0.03)
+      obstacles.push({x:300});
+
+    obstacles.forEach(o=>{
+      o.x-=5;
+      ctx.fillRect(o.x,320,30,30);
+      if (o.x<80 && o.x>20 && player.y>290) return;
+      if (o.x<0) score++;
+    });
+
+    if (score>8) return winGame();
+    requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+/* 🔫 GUN GAME */
+function gunGame() {
+  player = { x: 140 };
+  bullets=[];
+  obstacles=[];
+
+  document.onmousemove = e => player.x = e.offsetX;
+  document.onclick = ()=> bullets.push({x:player.x,y:350});
+
+  function loop() {
+    ctx.clearRect(0,0,300,400);
+    ctx.fillStyle="yellow";
+    ctx.fillRect(player.x,360,30,30);
+
+    bullets.forEach(b=>{
+      b.y-=6;
+      ctx.fillRect(b.x, b.y, 5,10);
+    });
+
+    if (Math.random()<0.03)
+      obstacles.push({x:Math.random()*260,y:0});
+
+    obstacles.forEach(o=>{
+      o.y+=3;
+      ctx.fillStyle="red";
+      ctx.fillRect(o.x,o.y,25,25);
+      bullets.forEach(b=>{
+        if (b.x<o.x+25 && b.x+5>o.x && b.y<o.y+25 && b.y+10>o.y)
+          score++;
+      });
+    });
+
+    if (score>6) return winGame();
+    requestAnimationFrame(loop);
+  }
+  loop();
 }
 </script>
+
 </body>
 </html>
