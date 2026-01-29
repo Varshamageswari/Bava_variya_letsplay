@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Love Quest 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  text-align: center;
+  color: #fff;
+}
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 30px;
+}
+.card {
+  background: rgba(255,255,255,0.2);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  margin-top: 20px;
+}
+button {
+  background: #ff4d6d;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 30px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 10px;
+}
+button:hover {
+  background: #ff1e4d;
+}
+.hidden { display: none; }
+.heart {
+  font-size: 40px;
+  animation: pulse 1.2s infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>💖 Love Quest 💖</h1>
+  <p>For Me & My Favorite Person</p>
+
+  <div class="card" id="start">
+    <div class="heart">❤️</div>
+    <p>Ready to play our love game?</p>
+    <button onclick="nextCard('q1')">Start</button>
+  </div>
+
+  <div class="card hidden" id="q1">
+    <h2>💌 Question</h2>
+    <p>Who fell in love first?</p>
+    <button onclick="nextCard('challenge')">Me 😌</button>
+    <button onclick="nextCard('challenge')">You 😍</button>
+  </div>
+
+  <div class="card hidden" id="challenge">
+    <h2>🎯 Challenge</h2>
+    <p>Send me your cutest selfie 📸</p>
+    <button onclick="nextCard('memory')">Done 💖</button>
+  </div>
+
+  <div class="card hidden" id="memory">
+    <h2>🧠 Memory Round</h2>
+    <p>Where did we meet first?</p>
+    <button onclick="nextCard('secret')">Office 💼</button>
+    <button onclick="nextCard('secret')">Party 🎉</button>
+    <button onclick="nextCard('secret')">Destiny ✨</button>
+  </div>
+
+  <div class="card hidden" id="secret">
+    <h2>🔒 Secret Message</h2>
+    <button onclick="revealMessage()">Reveal 💕</button>
+    <p id="message" class="hidden">
+      I choose you. Every single day. 💖
+    </p>
+    <button id="finalBtn" class="hidden" onclick="nextCard('final')">Next</button>
+  </div>
+
+  <div class="card hidden" id="final">
+    <h2>💍 Final Surprise</h2>
+    <p>You are my favorite chapter ❤️</p>
+    <div class="heart">💖</div>
+    <p>Forever us?</p>
+  </div>
+</div>
+
+<script>
+function nextCard(id) {
+  document.querySelectorAll('.card').forEach(card => {
+    card.classList.add('hidden');
+  });
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function revealMessage() {
+  document.getElementById('message').classList.remove('hidden');
+  document.getElementById('finalBtn').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
